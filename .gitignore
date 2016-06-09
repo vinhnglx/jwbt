@@ -27,3 +27,6 @@
 
 # Ignore public docs
 /public/docs
+
+# Ignore .byebug_history
+/.byebug_history
