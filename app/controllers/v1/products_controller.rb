@@ -8,11 +8,9 @@ class V1::ProductsController < V1::BaseController
 
   def create
     product = Product.new(product_params)
-    if product.valid?
-      product.save!
-      render json: product, status: :created
-    else
-      return head :internal_server_error
-    end
+
+    return head :internal_server_error unless product.valid?
+
+    render json: product, status: :created if product.save!
   end
 end
