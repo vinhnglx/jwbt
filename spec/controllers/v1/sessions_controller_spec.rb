@@ -5,9 +5,17 @@ describe V1::SessionsController do
     describe 'with valid account' do
       let!(:user) { create(:user, email: "foo@bar.com", password: "abcd1234") }
 
-      it "returns the welcome message" do
+      before do
         post :create, email: "foo@bar.com", password: "abcd1234"
-        expect(JSON.parse(response.body)["message"]).to eq "Yo, You logged in!"
+        @response_data = JSON.parse(response.body)
+      end
+
+      it "returns the welcome message" do
+        expect(@response_data["message"]).to eq "Yo, You logged in!"
+      end
+
+      it "returns the JWT - a kind of token" do
+        expect(@response_data.has_key?("token")).to be_truthy
       end
 
       it "returns http status success" do
