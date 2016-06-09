@@ -27,6 +27,9 @@ gem 'rubocop'
 gem 'saddler'
 gem 'saddler-reporter-github'
 
+##### Secure Password #####
+gem 'bcrypt'
+
 group :development, :test do
   ##### Debugging #####
   gem 'awesome_print'
