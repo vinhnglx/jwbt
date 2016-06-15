@@ -1,21 +1,17 @@
 module V1
   module JWTAuth
+    JWT_EXCEPTIONS = [JWT::DecodeError, JWT::ExpiredSignature, JWT::InvalidIssuerError, JWT::InvalidIatError].freeze
+
     def decode_auth
       begin
         options = { algorithm: 'HS256', iss: ENV['JWT_ISSUER'] }
         payload, header = JWT.decode(bearer_token, ENV['JWT_SECRET'], true, options)
-        results = {
-          "payload": payload,
-          "header": header
+        {
+          payload: payload,
+          header: header
         }
-      rescue JWT::DecodeError
-        [401, { 'Content-Type' => 'text/plain' }, ['A token must be passed.']]
-      rescue JWT::ExpiredSignature
-        [403, { 'Content-Type' => 'text/plain'}, ['The token has expired.']]
-      rescue JWT::InvalidIssuerError
-        [403, { 'Content-Type' => 'text/plain'}, ['The token does not have a valid user.']]
-      rescue JWT::InvalidIatError
-        [403, { 'Content-Type' => 'text/plain'}, ['The token does not have a valid issued_at time.']]
+      rescue *JWT_EXCEPTIONS => e
+        raise e
       end
     end
 
