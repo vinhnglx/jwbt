@@ -9,14 +9,13 @@ module API
       @scope_type = scope_type
     end
 
-
     # Create JWT base on payload and secret_key
     #
     # @returns String
     def token
       pl = if scope_type == 'special'
              payload.merge!(scopes: special_scopes)
-           else scope_type =='general'
+           elsif scope_type == 'general'
              payload
            end
       JWT.encode(pl, ENV['JWT_SECRET'], 'HS256')
@@ -43,7 +42,6 @@ module API
       def general_scopes
         ['list_products', 'show_product']
       end
-
 
       # Special scopes for an special token
       #

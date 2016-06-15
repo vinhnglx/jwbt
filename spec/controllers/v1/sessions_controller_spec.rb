@@ -15,7 +15,7 @@ describe V1::SessionsController do
       end
 
       it "returns the JWT - a kind of token" do
-        expect(@response_data.has_key?("token")).to be_truthy
+        expect(@response_data.key?("token")).to be_truthy
       end
 
       it "returns http status success" do

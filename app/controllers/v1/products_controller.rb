@@ -16,4 +16,3 @@ class V1::ProductsController < V1::BaseController
     render json: product, status: :created if product.save!
   end
 end
-

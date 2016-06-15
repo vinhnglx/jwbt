@@ -16,4 +16,3 @@ class V1::SessionsController < V1::BaseController
     end
   end
 end
-
