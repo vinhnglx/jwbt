@@ -30,6 +30,9 @@ gem 'saddler-reporter-github'
 ##### Secure Password #####
 gem 'bcrypt'
 
+##### JSON Web Token #####
+gem 'jwt'
+
 group :development, :test do
   ##### Debugging #####
   gem 'awesome_print'

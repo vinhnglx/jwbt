@@ -8,31 +8,58 @@ describe V1::ProductsController do
   end
 
   context 'index' do
-    it 'returns list of products' do
-      get :index
-      expect(JSON.parse(response.body).count).to eq Product.count
+    describe 'with valid scope type: general' do
+      it 'returns list of products' do
+        @request.headers['Authorization'] = "Bearer #{API::JWToken.new('general').token}"
+        get :index
+        expect(JSON.parse(response.body).count).to eq Product.count
+      end
+    end
+
+    describe 'with invalid scope type: general' do
+      it 'returns http status unauthorized' do
+        @request.headers['Authorization'] = "Bearer #{API::JWToken.new('special').token}"
+        get :index
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 
   context 'create' do
     describe 'with valid params' do
-      before do
-        post :create, product: { name: "Tshirt", price: 30 }
+      context 'with valid scope type: special' do
+        before do
+          @request.headers['Authorization'] = "Bearer #{API::JWToken.new('special').token}"
+          post :create, product: { name: "Tshirt", price: 30 }
+        end
+
+        it 'creates new product' do
+          response_data = JSON.parse(response.body)
+          expect(response_data["name"]).to eq "Tshirt"
+          expect(response_data["price"]).to eq 30
+        end
+
+        it 'returns http status created' do
+          expect(response).to have_http_status(:created)
+        end
       end
 
-      it 'creates new product' do
-        response_data = JSON.parse(response.body)
-        expect(response_data["name"]).to eq "Tshirt"
-        expect(response_data["price"]).to eq 30
+      context 'with invalid scope type: special' do
+        before do
+          @request.headers['Authorization'] = "Bearer #{API::JWToken.new('general').token}"
+          post :create, product: { name: "Tshirt", price: 30 }
+        end
+
+        it 'returns http status unauthorized' do
+          expect(response).to have_http_status(:unauthorized)
+        end
       end
 
-      it 'returns http status created' do
-        expect(response).to have_http_status(:created)
-      end
     end
 
-    describe 'with invalid params' do
+    describe 'with invalid params and valid/invalid scope type: special' do
       before do
+        @request.headers['Authorization'] = "Bearer #{API::JWToken.new('special').token}"
         post :create, product: { name: "Tshirt", price: nil }
       end
 

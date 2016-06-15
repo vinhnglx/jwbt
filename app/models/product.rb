@@ -10,7 +10,6 @@
 #
 
 class Product < ActiveRecord::Base
-
   # Validations
   validates :name, :price, presence: true
 end
